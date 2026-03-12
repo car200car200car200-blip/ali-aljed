@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="علي الجد">
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قصابية ومشويات علي الجد</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #fdfbf9; padding: 10px; direction: rtl; margin: 0; padding-bottom: 220px; }
+        .card { background: white; width: 100%; max-width: 500px; margin: auto; padding: 15px; border-radius: 20px; border: 2px solid #FF6600; }
+        .header { text-align: center; color: #FF6600; font-size: 24px; font-weight: bold; border-bottom: 3px solid #FF6600; padding-bottom: 10px; }
+        .st { background: #2c3e50; color: white; padding: 10px; border-radius: 10px; margin: 20px 0 10px 0; font-size: 18px; border-right: 6px solid #FF6600; text-align: right; }
+        .row { background: #fff; border: 1px solid #ddd; border-radius: 15px; padding: 12px; margin-bottom: 12px; }
+        .ctrl { display: flex; justify-content: space-between; align-items: center; background: #fff5ed; padding: 10px; border-radius: 12px; }
+        .btn { border: none; width: 45px; height: 45px; border-radius: 10px; font-size: 24px; cursor: pointer; color: white; font-weight: bold; }
+        .bp { background: #27ae60; } .bm { background: #e74c3c; }
+        .disp { text-align: center; flex-grow: 1; }
+        .wt { font-size: 14px; color: #555; display: block; font-weight: bold; }
+        .pt { font-size: 16px; color: #FF6600; font-weight: bold; }
+        .footer-fixed { position: fixed; bottom: 0; left: 0; right: 0; background: #2c3e50; color: white; padding: 15px; border-top: 4px solid #FF6600; z-index: 1000; max-width: 500px; margin: auto; }
+        #cart-text { font-size: 13px; color: #f1c40f; margin-bottom: 8px; max-height: 50px; overflow-y: auto; border-bottom: 1px solid #444; }
+        .total-line { font-size: 22px; font-weight: bold; display: flex; justify-content: space-between; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; text-align: right; box-sizing: border-box; }
+        .wa-btn { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .call-btn { background: #2980b9; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">🍊 قصابية ومشويات علي الجد</div>
+    <div id="m-body" style="text-align: center; padding: 20px;">جاري تحميل المنيو والأسعار...</div>
+    
+    <input type="text" id="c-name" placeholder="اسم الزبون الكريم">
+    <input type="text" id="c-addr" placeholder="العنوان">
+    <input type="text" id="c-note" placeholder="ملاحظات الطلب">
+    <button class="wa-btn" onclick="sendWA()">إرسال الطلب واتساب ✅</button>
+    <a href="tel:07807466488" class="call-btn">اتصال مباشر 📞</a>
+</div>
+
+<div class="footer-fixed">
+    <div id="cart-text">قائمة الطلبات: فارغة</div>
+    <div class="total-line">
+        <span>المجموع:</span>
+        <span><span id="final-total">0</span> د.ع</span>
+    </div>
+</div>
+
+<script>
+var L = { Q: ["ربع", "نص", "3/4", "1كغم"], H: ["نص", "1كغم", "1.5", "2كغم"], K: ["1كغم", "2كغم", "3كغم"], F: ["وجبة", "2", "3"] };
+var items = [];
+var cart = {};
+
+async function loadMenu() {
+    // هذا الرابط مرتبط بجدولك (مطعم نموذجي حديث)
+    const api = 'https://sheetdb.io/api/v1/shdaju22b6oef';
+    try {
+        const res = await fetch(api);
+        const data = await res.json();
+        if(data && data.length > 0) {
+            items = data.map(r => ({ s: r.category, n: r.name, p: parseInt(r.price), t: r.type || "Q" }));
+            start();
+        } else {
+            document.getElementById('m-body').innerText = "الجدول فارغ، يرجى التأكد من البيانات";
+        }
+    } catch (e) {
+        document.getElementById('m-body').innerText = "حدث خطأ في جلب البيانات من جوجل شيت";
+    }
+}
+
+function start() {
+    var h = ""; var lastS = "";
+    for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        if (it.s !== lastS) { h += '<div class="st">' + it.s + '</div>'; lastS = it.s; }
+        if (!(i in cart)) cart[i] = -1;
+        var q = cart[i];
+        var txt = (q === -1) ? "إختر" : L[it.t][q];
+        var pr = (q === -1) ? it.p : (q + 1) * it.p;
+        h += '<div class="row"><b>' + it.n + '</b><div class="ctrl"><button class="btn bp" onclick="up(' + i + ',1)">+</button><div class="disp"><span class="wt">' + txt + '</span><span class="pt">' + pr.toLocaleString() + ' د.ع</span></div><button class="btn bm" onclick="up(' + i + ',-1)">-</button></div></div>';
+    }
+    document.getElementById('m-body').innerHTML = h;
+    update();
+}
+
+function up(idx, v) { if (cart[idx] + v >= -1 && cart[idx] + v < 4) { cart[idx] += v; start(); } }
+
+function update() {
+    var total = 0; var list = [];
+    for (var i = 0; i < items.length; i++) {
+        if (cart[i] > -1) {
+            total += (cart[i] + 1) * items[i].p;
+            list.push(items[i].n + " (" + L[items[i].t][cart[i]] + ")");
+        }
+    }
+    document.getElementById('final-total').innerText = total.toLocaleString();
+    document.getElementById('cart-text').innerText = list.length ? list.join(" | ") : "قائمة الطلبات: فارغة";
+}
+
+function sendWA() {
+    var n = document.getElementById('c-name').value;
+    var a = document.getElementById('c-addr').value;
+    var note = document.getElementById('c-note').value; // سحب الملاحظة
+    
+    if (!n || !a) return alert("يرجى إكمال الاسم والعنوان");
+
+    var msg = "*طلب جديد من قصابية ومشويات علي الجد*\n";
+    msg += "👤 الاسم: " + n + "\n";
+    msg += "📍 العنوان: " + a + "\n";
+    if (note) msg += "📝 ملاحظة: " + note + "\n"; // إضافة الملاحظة للرسالة
+    msg += "\n🍴 الطلبات:\n";
+
+    for (var i = 0; i < items.length; i++) { 
+        if (cart[i] > -1) msg += "- " + items[i].n + " (" + L[items[i].t][cart[i]] + ")\n"; 
+    }
+    
+    var total = document.getElementById('final-total').innerText;
+    var url = "https://wa.me/9647807466488?text=" + encodeURIComponent(msg + "\n💰 المجموع الكلي: " + total + " د.ع");
+    window.open(url);
+}
+
+window.onload = loadMenu;
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

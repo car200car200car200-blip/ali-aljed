@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <link rel="apple-touch-icon" href="icon.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="apple-touch-icon" sizes="167x167" href="icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="علي الجد">
-    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قصابية ومشويات علي الجد</title>
@@ -35,7 +28,7 @@
 
 <div class="card">
     <div class="header">🍊 قصابية ومشويات علي الجد</div>
-    <div id="m-body" style="text-align: center; padding: 20px;">جاري تحميل المنيو والأسعار...</div>
+    <div id="m-body" style="text-align: center; padding: 20px;">جاري عرض المنيو...</div>
     
     <input type="text" id="c-name" placeholder="اسم الزبون الكريم">
     <input type="text" id="c-addr" placeholder="العنوان">
@@ -53,32 +46,25 @@
 </div>
 
 <script>
-var L = { Q: ["ربع", "نص", "3/4", "1كغم"], H: ["نص", "1كغم", "1.5", "2كغم"], K: ["1كغم", "2كغم", "3كغم"], F: ["وجبة", "2", "3"] };
+// قائمة الطعام الكاملة
 var items = [
-    var items = [
-    // قسم المشويات
     { s: "المشويات", n: "كباب غنم", p: 12000, t: "Q" },
     { s: "المشويات", n: "تكة لحم", p: 15000, t: "Q" },
     { s: "المشويات", n: "كباب دجاج", p: 10000, t: "Q" },
     { s: "المشويات", n: "معلاق غنم", p: 12000, t: "Q" },
-    { s: "المشويات", n: "شيش طاووق", p: 10000, t: "Q" },
-    
-    // قسم الوجبات
-    { s: "الوجبات السريعة", n: "نفر كص لحم", p: 8000, t: "F" },
-    { s: "الوجبات السريعة", n: "نفر كص دجاج", p: 7000, t: "F" },
-    { s: "الوجبات السريعة", n: "نفر برياني", p: 6000, t: "F" },
-    { s: "الوجبات السريعة", n: "دجاج شواية (كاملة)", p: 12000, t: "F" },
-
-    // قسم المقبلات
-    { s: "المقبلات والجانبيات", n: "ماعون مقبلات مشكل", p: 5000, t: "F" },
-    { s: "المقبلات والجانبيات", n: "حمص بطحينة", p: 2000, t: "F" },
-    { s: "المقبلات والجانبيات", n: "سلطة حارة", p: 1500, t: "F" },
-
-    // قسم المشروبات
-    { s: "المشروبات", n: "قوطية بيبسي / سفن", p: 500, t: "F" },
-    { s: "المشروبات", n: "لبن أربيل (كبير)", p: 1500, t: "F" },
-    { s: "المشروبات", n: "ماء (صغير)", p: 250, t: "F" }
+    { s: "المشويات", n: "شيش دبلد", p: 10000, t: "Q" },
+    { s: "الوجبات", n: "نفر كص لحم", p: 8000, t: "F" },
+    { s: "الوجبات", n: "نفر كص دجاج", p: 7000, t: "F" },
+    { s: "الوجبات", n: "دجاج شواية كاملة", p: 12000, t: "F" },
+    { s: "المقبلات", n: "مقبلات مشكلة", p: 5000, t: "F" },
+    { s: "المقبلات", n: "حمص بطحينة", p: 2000, t: "F" },
+    { s: "المشروبات", n: "بيبسي / سفن", p: 500, t: "F" },
+    { s: "المشروبات", n: "لبن نجف", p: 1500, t: "F" }
 ];
+
+var L = { Q: ["ربع", "نص", "3/4", "1كغم"], H: ["نص", "1كغم", "1.5", "2كغم"], K: ["1كغم", "2كغم", "3كغم"], F: ["وجبة", "2", "3"] };
+var cart = {};
+
 function start() {
     var h = ""; var lastS = "";
     for (var i = 0; i < items.length; i++) {
@@ -111,37 +97,16 @@ function update() {
 function sendWA() {
     var n = document.getElementById('c-name').value;
     var a = document.getElementById('c-addr').value;
-    var note = document.getElementById('c-note').value; // سحب الملاحظة
-    
+    var note = document.getElementById('c-note').value;
     if (!n || !a) return alert("يرجى إكمال الاسم والعنوان");
-
-    var msg = "*طلب جديد من قصابية ومشويات علي الجد*\n";
-    msg += "👤 الاسم: " + n + "\n";
-    msg += "📍 العنوان: " + a + "\n";
-    if (note) msg += "📝 ملاحظة: " + note + "\n"; // إضافة الملاحظة للرسالة
-    msg += "\n🍴 الطلبات:\n";
-
-    for (var i = 0; i < items.length; i++) { 
-        if (cart[i] > -1) msg += "- " + items[i].n + " (" + L[items[i].t][cart[i]] + ")\n"; 
-    }
-    
-    var total = document.getElementById('final-total').innerText;
-    var url = "https://wa.me/9647807466488?text=" + encodeURIComponent(msg + "\n💰 المجموع الكلي: " + total + " د.ع");
+    var msg = "*طلب جديد من قصابية ومشويات علي الجد*\n👤 الاسم: " + n + "\n📍 العنوان: " + a + "\n📝 ملاحظة: " + (note || "لا يوجد") + "\n\n🍴 الطلبات:\n";
+    for (var i = 0; i < items.length; i++) { if (cart[i] > -1) msg += "- " + items[i].n + " (" + L[items[i].t][cart[i]] + ")\n"; }
+    var url = "https://wa.me/9647807466488?text=" + encodeURIComponent(msg + "\n💰 المجموع الكلي: " + document.getElementById('final-total').innerText + " د.ع");
     window.open(url);
 }
 
-window.onload = start
+// تشغيل المنيو فوراً
+window.onload = start;
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

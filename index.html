@@ -54,26 +54,15 @@
 
 <script>
 var L = { Q: ["ربع", "نص", "3/4", "1كغم"], H: ["نص", "1كغم", "1.5", "2كغم"], K: ["1كغم", "2كغم", "3كغم"], F: ["وجبة", "2", "3"] };
-var items = [];
+var items = [
+    { s: "المشويات", n: "كباب غنم", p: 12000, t: "Q" },
+    { s: "المشويات", n: "تكة لحم", p: 18000, t: "Q" },
+    { s: "المشويات", n: "معلاق غنم", p: 10000, t: "Q" },
+    { s: "الوجبات", n: "نفر كص لحم", p: 8000, t: "F" },
+    { s: "الوجبات", n: "نفر كص دجاج", p: 7000, t: "F" },
+    { s: "المقبلات", n: "ماعون مشكل", p: 5000, t: "F" }
+];
 var cart = {};
-
-async function loadMenu() {
-    // هذا الرابط مرتبط بجدولك (مطعم نموذجي حديث)
-    const api = 'https://sheetdb.io/api/v1/shdaju22b6oef';
-    try {
-        const res = await fetch(api);
-        const data = await res.json();
-        if(data && data.length > 0) {
-            items = data.map(r => ({ s: r.category, n: r.name, p: parseInt(r.price), t: r.type || "Q" }));
-            start();
-        } else {
-            document.getElementById('m-body').innerText = "الجدول فارغ، يرجى التأكد من البيانات";
-        }
-    } catch (e) {
-        document.getElementById('m-body').innerText = "حدث خطأ في جلب البيانات من جوجل شيت";
-    }
-}
-
 function start() {
     var h = ""; var lastS = "";
     for (var i = 0; i < items.length; i++) {
@@ -125,7 +114,7 @@ function sendWA() {
     window.open(url);
 }
 
-window.onload = loadMenu;
+window.onload = start
 </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قصابية ومشويات علي الجد</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #fdfbf9; padding: 10px; direction: rtl; margin: 0; padding-bottom: 220px; }
+        body { font-family: Arial, sans-serif; background: #fdfbf9; padding: 10px; direction: rtl; margin: 0; padding-bottom: 260px; }
         .card { background: white; width: 100%; max-width: 500px; margin: auto; padding: 15px; border-radius: 20px; border: 2px solid #FF6600; }
         .header { text-align: center; color: #FF6600; font-size: 24px; font-weight: bold; border-bottom: 3px solid #FF6600; padding-bottom: 10px; margin-bottom: 20px;}
         .st { background: #2c3e50; color: white; padding: 12px; border-radius: 10px; margin: 25px 0 15px 0; font-size: 18px; border-right: 6px solid #FF6600; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px;}
@@ -13,15 +13,18 @@
         .item-name { display: block; text-align: center; font-weight: bold; font-size: 17px; margin-bottom: 10px; color: #333; }
         .ctrl { display: flex; justify-content: space-between; align-items: center; background: #fff5ed; padding: 10px; border-radius: 12px; }
         .btn { border: none; width: 45px; height: 45px; border-radius: 10px; font-size: 24px; cursor: pointer; color: white; font-weight: bold; transition: 0.2s; }
+        .btn:active { transform: scale(0.9); }
         .bp { background: #27ae60; } .bm { background: #e74c3c; }
         .disp { text-align: center; flex-grow: 1; }
         .wt { font-size: 14px; color: #555; display: block; font-weight: bold; }
         .pt { font-size: 16px; color: #FF6600; font-weight: bold; }
         .footer-fixed { position: fixed; bottom: 0; left: 0; right: 0; background: #2c3e50; color: white; padding: 15px; border-top: 4px solid #FF6600; z-index: 1000; max-width: 500px; margin: auto; }
         #cart-text { font-size: 13px; color: #f1c40f; margin-bottom: 8px; max-height: 50px; overflow-y: auto; border-bottom: 1px solid #444; text-align: right; }
-        .total-line { font-size: 22px; font-weight: bold; display: flex; justify-content: space-between; }
+        .total-line { font-size: 22px; font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 10px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; text-align: right; box-sizing: border-box; font-size: 16px; }
-        .wa-btn { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .action-btns { display: flex; gap: 10px; flex-direction: column; }
+        .wa-btn { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .call-btn { background: #007bff; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; text-decoration: none; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -32,7 +35,11 @@
     <input type="text" id="c-name" placeholder="اسم الزبون الكريم">
     <input type="text" id="c-addr" placeholder="العنوان">
     <input type="text" id="c-note" placeholder="ملاحظات الطلب">
-    <button class="wa-btn" onclick="sendWA()">إرسال الطلب واتساب ✅</button>
+    
+    <div class="action-btns">
+        <button class="wa-btn" onclick="sendWA()">إرسال الطلب واتساب ✅</button>
+        <a href="tel:9647807466488" class="call-btn">إتصال مباشر 📞</a>
+    </div>
 </div>
 
 <div class="footer-fixed">
@@ -85,6 +92,8 @@ var items = [
     { s: "🥩 فرش 🍖", n: "قلب عجل", p: 18000, t: "P" }
 ];
 
+var cart = {};
+
 function start() {
     var h = ""; var lastS = "";
     for (var i = 0; i < items.length; i++) {
@@ -99,7 +108,6 @@ function start() {
     document.getElementById('m-body').innerHTML = h;
     update();
 }
-var cart = {};
 function up(idx, v) { var max = L[items[idx].t].length; if (cart[idx] + v >= -1 && cart[idx] + v < max) { cart[idx] += v; start(); } }
 function update() {
     var total = 0; var list = [];

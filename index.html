@@ -13,7 +13,6 @@
         .item-name { display: block; text-align: center; font-weight: bold; font-size: 17px; margin-bottom: 10px; color: #333; }
         .ctrl { display: flex; justify-content: space-between; align-items: center; background: #fff5ed; padding: 10px; border-radius: 12px; }
         .btn { border: none; width: 45px; height: 45px; border-radius: 10px; font-size: 24px; cursor: pointer; color: white; font-weight: bold; transition: 0.2s; }
-        .btn:active { transform: scale(0.9); }
         .bp { background: #27ae60; } .bm { background: #e74c3c; }
         .disp { text-align: center; flex-grow: 1; }
         .wt { font-size: 14px; color: #555; display: block; font-weight: bold; }
@@ -23,8 +22,8 @@
         .total-line { font-size: 22px; font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 10px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; text-align: right; box-sizing: border-box; font-size: 16px; }
         .action-btns { display: flex; gap: 10px; flex-direction: column; }
-        .wa-btn { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .call-btn { background: #007bff; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; text-decoration: none; box-sizing: border-box; }
+        .wa-btn { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .call-btn { background: #007bff; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: block; line-height: 50px; }
     </style>
 </head>
 <body>
@@ -48,30 +47,49 @@
 </div>
 
 <script>
-var L = { M:["ربع كغم"], Q:["ربع كغم","نص كغم","كيلو إلا ربع","1 كيلو"], H:["نص كغم","1 كيلو","1.5 كيلو","2 كيلو"], F:["وجبة ك","2","3","4"], P:["إختر","2","3","4"] };
+// وظيفة توليد القوائم
+function genList(type) {
+    let a = ["إختر"];
+    if(type === "Q") { // للبدء من ربع
+        a.push("ربع كغم", "نص كغم", "كيلو إلا ربع");
+        for(let i=1; i<=50; i++) a.push(i + " كغم");
+    } else if(type === "H") { // للبدء من نص كيلو (كباب اللحم نص فأكثر)
+        a.push("نص كغم", "كيلو إلا ربع");
+        for(let i=1; i<=50; i++) a.push(i + " كغم");
+    } else if(type === "M") {
+        for(let i=1; i<=50; i++) a.push(i + " ماعون");
+    } else if(type === "F") {
+        for(let i=1; i<=50; i++) a.push(i + " وجبة");
+    } else {
+        for(let i=1; i<=50; i++) a.push(i + " قطعة");
+    }
+    return a;
+}
+
+var L = { M: genList("M"), Q: genList("Q"), H: genList("H"), F: genList("F"), P: genList("P") };
 
 var items = [
-    { s: "🔥 المشاوي", n: "كباب لحم (ماعون الربع المرتب)", p: 5000, t: "M" },
-    { s: "🔥 المشاوي", n: "كباب لحم (نص كيلو فأكثر)", p: 9000, t: "H" },
-    { s: "🔥 المشاوي", n: "كباب دجاج", p: 4000, t: "Q" },
-    { s: "🔥 المشاوي", n: "كبدة شوي", p: 5000, t: "Q" },
-    { s: "🔥 المشاوي", n: "كبدة بدون شوي", p: 4500, t: "Q" },
-    { s: "🔥 المشاوي", n: "تكة لحم شوي", p: 6000, t: "Q" },
-    { s: "🔥 المشاوي", n: "تكة لحم بدون شوي", p: 5500, t: "Q" },
-    { s: "🔥 المشاوي", n: "تكة دجاج شوي", p: 5000, t: "Q" },
-    { s: "🔥 المشاوي", n: "تكة دجاج بدون شوي", p: 4000, t: "Q" },
-    { s: "🔥 المشاوي", n: "أجنحة شوي", p: 6000, t: "Q" },
-    { s: "🔥 المشاوي", n: "أجنحة بدون شوي", p: 5000, t: "Q" },
-    { s: "🔥 المشاوي", n: "عصا شوي", p: 6000, t: "Q" },
-    { s: "🔥 المشاوي", n: "عصا بدون شوي", p: 5000, t: "Q" },
-    { s: "🔥 المشاوي", n: "دجاجة شوي", p: 6000, t: "F" },
-    { s: "🔥 المشاوي", n: "دجاجة بدون شوي", p: 5000, t: "F" },
-    { s: "🥩 اللحوم", n: "لحم غنم", p: 6000, t: "Q" },
-    { s: "🥩 اللحوم", n: "لحم عجل شرح", p: 4000, t: "Q" },
-    { s: "🥩 اللحوم", n: "لحم عجل عظم", p: 3500, t: "Q" },
-    { s: "🥩 اللحوم", n: "لحم مثروم", p: 4000, t: "Q" },
-    { s: "🥩 اللحوم", n: "لية", p: 5000, t: "Q" },
-    { s: "🥩 اللحوم", n: "عظم", p: 3000, t: "Q" },
+    { s: "🔥 المشاوي", n: "كباب لحم (الربع المرتب)", p: 5000, t: "M" },
+    { s: "🔥 المشاوي", n: "كباب لحم (نص كيلو فأكثر)", p: 9000, t: "H" }, // يبدأ من نص بـ 9000
+    { s: "🔥 المشاوي", n: "كباب دجاج", p: 3000, t: "Q" },
+    { s: "🔥 المشاوي", n: "كبدة شوي", p: 4000, t: "Q" },
+    { s: "🔥 المشاوي", n: "كبدة بدون شوي", p: 3500, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة لحم شوي", p: 5000, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة لحم بدون شوي", p: 4500, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة دجاج شوي", p: 3500, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة دجاج بدون شوي", p: 3000, t: "Q" },
+    { s: "🔥 المشاوي", n: "أجنحة شوي", p: 2500, t: "Q" },
+    { s: "🔥 المشاوي", n: "أجنحة بدون شوي", p: 2000, t: "Q" },
+    { s: "🔥 المشاوي", n: "عصا شوي", p: 2500, t: "Q" },
+    { s: "🔥 المشاوي", n: "عصا بدون شوي", p: 2000, t: "Q" },
+    { s: "🔥 المشاوي", n: "دجاجة شوي", p: 8000, t: "F" },
+    { s: "🔥 المشاوي", n: "دجاجة بدون شوي", p: 7000, t: "F" },
+    { s: "🥩 اللحوم", n: "لحم غنم", p: 4500, t: "Q" },
+    { s: "🥩 اللحوم", n: "لحم عجل شرح", p: 3750, t: "Q" },
+    { s: "🥩 اللحوم", n: "لحم عجل عظم", p: 3000, t: "Q" },
+    { s: "🥩 اللحوم", n: "لحم مثروم", p: 3500, t: "Q" },
+    { s: "🥩 اللحوم", n: "لية", p: 2500, t: "Q" },
+    { s: "🥩 اللحوم", n: "عظم", p: 1000, t: "Q" },
     { s: "🥩 فرش 🍖", n: "دجاجة كامله 1250غم", p: 8000, t: "P" },
     { s: "🥩 فرش 🍖", n: "عصا طبل", p: 7000, t: "P" },
     { s: "🥩 فرش 🍖", n: "أفخاذ", p: 6000, t: "P" },
@@ -93,38 +111,55 @@ var items = [
 ];
 
 var cart = {};
-
 function start() {
-    var h = ""; var lastS = "";
-    for (var i = 0; i < items.length; i++) {
-        var it = items[i];
+    let h = ""; let lastS = "";
+    for (let i = 0; i < items.length; i++) {
+        let it = items[i];
         if (it.s !== lastS) { h += '<div class="st">' + it.s + '</div>'; lastS = it.s; }
-        if (!(i in cart)) cart[i] = -1;
-        var q = cart[i];
-        var txt = (q === -1) ? "إختر" : L[it.t][q];
-        var pr = (q === -1) ? it.p : (q + 1) * it.p;
-        h += '<div class="row"><span class="item-name">' + it.n + '</span><div class="ctrl"><button class="btn bp" onclick="up(' + i + ',1)">+</button><div class="disp"><span class="wt">' + txt + '</span><span class="pt">' + pr.toLocaleString() + ' د.ع</span></div><button class="btn bm" onclick="up(' + i + ',-1)">-</button></div></div>';
+        if (!(i in cart)) cart[i] = 0;
+        let q = cart[i];
+        let txt = L[it.t][q];
+        let pr = calc(i, q);
+        h += '<div class="row"><span class="item-name">'+it.n+'</span><div class="ctrl"><button class="btn bp" onclick="up('+i+',1)">+</button><div class="disp"><span class="wt">'+txt+'</span><span class="pt">'+pr.toLocaleString()+' د.ع</span></div><button class="btn bm" onclick="up('+i+',-1)">-</button></div></div>';
     }
     document.getElementById('m-body').innerHTML = h;
     update();
 }
-function up(idx, v) { var max = L[items[idx].t].length; if (cart[idx] + v >= -1 && cart[idx] + v < max) { cart[idx] += v; start(); } }
+
+function calc(i, q) {
+    if (q === 0) return 0;
+    let it = items[i];
+    if (it.t === "Q") { // تبدأ من ربع
+        if (q === 1) return it.p;
+        if (q === 2) return it.p * 2;
+        if (q === 3) return it.p * 3;
+        return it.p * 4 * (q - 3);
+    } else if (it.t === "H") { // تبدأ من نص (كباب لحم العزائم)
+        if (q === 1) return it.p; // نص كيلو بـ 9000
+        if (q === 2) return it.p * 1.5; // كيلو إلا ربع بـ 13500
+        return it.p * 2 * (q - 1); // الكيلوات (نضرب سعر النص في 2)
+    }
+    return q * it.p;
+}
+
+function up(i, v) { let max = L[items[i].t].length; if (cart[i]+v >= 0 && cart[i]+v < max) { cart[i]+=v; start(); } }
 function update() {
-    var total = 0; var list = [];
-    for (var i = 0; i < items.length; i++) { if (cart[i] > -1) { total += (cart[i] + 1) * items[i].p; list.push(items[i].n + " (" + L[items[i].t][cart[i]] + ")"); } }
-    document.getElementById('final-total').innerText = total.toLocaleString();
+    let t = 0; let list = [];
+    for (let i = 0; i < items.length; i++) { 
+        if (cart[i] > 0) { 
+            t += calc(i, cart[i]); 
+            list.push(items[i].n + " (" + L[items[i].t][cart[i]] + ")"); 
+        } 
+    }
+    document.getElementById('final-total').innerText = t.toLocaleString();
     document.getElementById('cart-text').innerText = list.length ? list.join(" | ") : "قائمة الطلبات: فارغة";
 }
 function sendWA() {
-    var n = document.getElementById('c-name').value;
-    var a = document.getElementById('c-addr').value;
-    var note = document.getElementById('c-note').value;
+    let n = document.getElementById('c-name').value; let a = document.getElementById('c-addr').value;
     if (!n || !a) return alert("يرجى إكمال الاسم والعنوان");
-    var msg = "*طلب جديد من علي الجد*\n👤 الاسم: " + n + "\n📍 العنوان: " + a + "\n📝 ملاحظة: " + (note || "لا يوجد") + "\n\n🍴 الطلبات:\n";
-    for (var i = 0; i < items.length; i++) { if (cart[i] > -1) msg += "- " + items[i].n + " (" + L[items[i].t][cart[i]] + ")\n"; }
-    var total = document.getElementById('final-total').innerText;
-    var url = "https://wa.me/9647807466488?text=" + encodeURIComponent(msg + "\n💰 المجموع: " + total + " د.ع");
-    window.open(url);
+    let msg = "*طلب من علي الجد*\n👤 الاسم: "+n+"\n📍 العنوان: "+a+"\n\n🍴 الطلبات:\n";
+    for (let i = 0; i < items.length; i++) { if (cart[i] > 0) msg += "- " + items[i].n + " (" + L[items[i].t][cart[i]] + ")\n"; }
+    window.open("https://wa.me/9647807466488?text=" + encodeURIComponent(msg + "\n💰 المجموع: " + document.getElementById('final-total').innerText + " د.ع"));
 }
 window.onload = start;
 </script>

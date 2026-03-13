@@ -7,23 +7,25 @@
     <style>
         body { font-family: Arial, sans-serif; background: #fdfbf9; padding: 10px; direction: rtl; margin: 0; padding-bottom: 220px; }
         .card { background: white; width: 100%; max-width: 500px; margin: auto; padding: 15px; border-radius: 20px; border: 2px solid #FF6600; }
-        .header { text-align: center; color: #FF6600; font-size: 24px; font-weight: bold; border-bottom: 3px solid #FF6600; padding-bottom: 10px; }
-        .st { background: #2c3e50; color: white; padding: 10px; border-radius: 10px; margin: 20px 0 10px 0; font-size: 18px; border-right: 6px solid #FF6600; text-align: right; }
-        .row { background: #fff; border: 1px solid #ddd; border-radius: 15px; padding: 12px; margin-bottom: 12px; }
+        .header { text-align: center; color: #FF6600; font-size: 24px; font-weight: bold; border-bottom: 3px solid #FF6600; padding-bottom: 10px; margin-bottom: 20px;}
+        .st { background: #2c3e50; color: white; padding: 12px; border-radius: 10px; margin: 25px 0 15px 0; font-size: 18px; border-right: 6px solid #FF6600; text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px;}
+        .row { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .item-name { display: block; text-align: center; font-weight: bold; font-size: 17px; margin-bottom: 10px; color: #333; }
         .ctrl { display: flex; justify-content: space-between; align-items: center; background: #fff5ed; padding: 10px; border-radius: 12px; }
-        .btn { border: none; width: 45px; height: 45px; border-radius: 10px; font-size: 24px; cursor: pointer; color: white; font-weight: bold; }
+        .btn { border: none; width: 45px; height: 45px; border-radius: 10px; font-size: 24px; cursor: pointer; color: white; font-weight: bold; transition: 0.2s; }
         .bp { background: #27ae60; } .bm { background: #e74c3c; }
         .disp { text-align: center; flex-grow: 1; }
         .wt { font-size: 14px; color: #555; display: block; font-weight: bold; }
         .pt { font-size: 16px; color: #FF6600; font-weight: bold; }
         .footer-fixed { position: fixed; bottom: 0; left: 0; right: 0; background: #2c3e50; color: white; padding: 15px; border-top: 4px solid #FF6600; z-index: 1000; max-width: 500px; margin: auto; }
-        #cart-text { font-size: 13px; color: #f1c40f; margin-bottom: 8px; max-height: 50px; overflow-y: auto; border-bottom: 1px solid #444; }
+        #cart-text { font-size: 13px; color: #f1c40f; margin-bottom: 8px; max-height: 50px; overflow-y: auto; border-bottom: 1px solid #444; text-align: right; }
         .total-line { font-size: 22px; font-weight: bold; display: flex; justify-content: space-between; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; text-align: right; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; text-align: right; box-sizing: border-box; font-size: 16px; }
         .wa-btn { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
+
 <div class="card">
     <div class="header">🍊 قصابية ومشويات علي الجد</div>
     <div id="m-body"></div>
@@ -32,20 +34,57 @@
     <input type="text" id="c-note" placeholder="ملاحظات الطلب">
     <button class="wa-btn" onclick="sendWA()">إرسال الطلب واتساب ✅</button>
 </div>
+
 <div class="footer-fixed">
     <div id="cart-text">قائمة الطلبات: فارغة</div>
     <div class="total-line"><span>المجموع:</span><span><span id="final-total">0</span> د.ع</span></div>
 </div>
+
 <script>
-var L = { Q: ["ربع كغم", "نص كغم", "كيلو إلا ربع", "1 كيلو"], H: ["نص كغم", "1 كيلو", "1.5 كيلو", "2 كيلو"], F: ["وجبة", "2", "3", "4"] };
+var L = { M:["ربع كغم"], Q:["ربع كغم","نص كغم","كيلو إلا ربع","1 كيلو"], H:["نص كغم","1 كيلو","1.5 كيلو","2 كيلو"], F:["وجبة ك","2","3","4"], P:["إختر","2","3","4"] };
+
 var items = [
-    { s: "المشويات", n: "كباب لحم (ماعون الربع المرتب)", p: 5000, t: "F" },
-    { s: "المشويات", n: "كباب لحم (نص كيلو فأكثر)", p: 6000, t: "H" },
-    { s: "المشويات", n: "كباب دجاج", p: 4000, t: "Q" },
-    { s: "المشويات", n: "تكة لحم شوي", p: 6000, t: "Q" },
-    { s: "المشويات", n: "دجاجة شوي كاملة", p: 6000, t: "F" }
+    { s: "🔥 المشاوي", n: "كباب لحم (ماعون الربع المرتب)", p: 5000, t: "M" },
+    { s: "🔥 المشاوي", n: "كباب لحم (نص كيلو فأكثر)", p: 9000, t: "H" },
+    { s: "🔥 المشاوي", n: "كباب دجاج", p: 4000, t: "Q" },
+    { s: "🔥 المشاوي", n: "كبدة شوي", p: 5000, t: "Q" },
+    { s: "🔥 المشاوي", n: "كبدة بدون شوي", p: 4500, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة لحم شوي", p: 6000, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة لحم بدون شوي", p: 5500, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة دجاج شوي", p: 5000, t: "Q" },
+    { s: "🔥 المشاوي", n: "تكة دجاج بدون شوي", p: 4000, t: "Q" },
+    { s: "🔥 المشاوي", n: "أجنحة شوي", p: 6000, t: "Q" },
+    { s: "🔥 المشاوي", n: "أجنحة بدون شوي", p: 5000, t: "Q" },
+    { s: "🔥 المشاوي", n: "عصا شوي", p: 6000, t: "Q" },
+    { s: "🔥 المشاوي", n: "عصا بدون شوي", p: 5000, t: "Q" },
+    { s: "🔥 المشاوي", n: "دجاجة شوي", p: 6000, t: "F" },
+    { s: "🔥 المشاوي", n: "دجاجة بدون شوي", p: 5000, t: "F" },
+    { s: "🥩 اللحوم", n: "لحم غنم", p: 6000, t: "Q" },
+    { s: "🥩 اللحوم", n: "لحم عجل شرح", p: 4000, t: "Q" },
+    { s: "🥩 اللحوم", n: "لحم عجل عظم", p: 3500, t: "Q" },
+    { s: "🥩 اللحوم", n: "لحم مثروم", p: 4000, t: "Q" },
+    { s: "🥩 اللحوم", n: "لية", p: 5000, t: "Q" },
+    { s: "🥩 اللحوم", n: "عظم", p: 3000, t: "Q" },
+    { s: "🥩 فرش 🍖", n: "دجاجة كامله 1250غم", p: 8000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "عصا طبل", p: 7000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "أفخاذ", p: 6000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "كبدة دجاج", p: 3000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "صدر دجاج", p: 7500, t: "P" },
+    { s: "🥩 فرش 🍖", n: "باجة غنم", p: 20000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "بركر لحم", p: 8000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "بركر دجاج", p: 8000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "كبة تمن 4 قطع", p: 4000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "كبة مرق 4 قطع", p: 4000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "كاهي 3 قطع", p: 5000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "لسان عجل", p: 12000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "كراعين", p: 8000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "معلاك غنم", p: 18000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "عصائص غنم", p: 15000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "مخ غنم", p: 5000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "جلاوي غنم", p: 9000, t: "P" },
+    { s: "🥩 فرش 🍖", n: "قلب عجل", p: 18000, t: "P" }
 ];
-var cart = {};
+
 function start() {
     var h = ""; var lastS = "";
     for (var i = 0; i < items.length; i++) {
@@ -55,17 +94,16 @@ function start() {
         var q = cart[i];
         var txt = (q === -1) ? "إختر" : L[it.t][q];
         var pr = (q === -1) ? it.p : (q + 1) * it.p;
-        h += '<div class="row"><b>' + it.n + '</b><div class="ctrl"><button class="btn bp" onclick="up(' + i + ',1)">+</button><div class="disp"><span class="wt">' + txt + '</span><span class="pt">' + pr.toLocaleString() + ' د.ع</span></div><button class="btn bm" onclick="up(' + i + ',-1)">-</button></div></div>';
+        h += '<div class="row"><span class="item-name">' + it.n + '</span><div class="ctrl"><button class="btn bp" onclick="up(' + i + ',1)">+</button><div class="disp"><span class="wt">' + txt + '</span><span class="pt">' + pr.toLocaleString() + ' د.ع</span></div><button class="btn bm" onclick="up(' + i + ',-1)">-</button></div></div>';
     }
     document.getElementById('m-body').innerHTML = h;
     update();
 }
-function up(idx, v) { if (cart[idx] + v >= -1 && cart[idx] + v < 4) { cart[idx] += v; start(); } }
+var cart = {};
+function up(idx, v) { var max = L[items[idx].t].length; if (cart[idx] + v >= -1 && cart[idx] + v < max) { cart[idx] += v; start(); } }
 function update() {
     var total = 0; var list = [];
-    for (var i = 0; i < items.length; i++) {
-        if (cart[i] > -1) { total += (cart[i] + 1) * items[i].p; list.push(items[i].n + " (" + L[items[i].t][cart[i]] + ")"); }
-    }
+    for (var i = 0; i < items.length; i++) { if (cart[i] > -1) { total += (cart[i] + 1) * items[i].p; list.push(items[i].n + " (" + L[items[i].t][cart[i]] + ")"); } }
     document.getElementById('final-total').innerText = total.toLocaleString();
     document.getElementById('cart-text').innerText = list.length ? list.join(" | ") : "قائمة الطلبات: فارغة";
 }
